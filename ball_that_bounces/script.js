@@ -2,7 +2,7 @@ const canvas = document.getElementById("game");
 const ctx = canvas.getContext('2d');
 
 const settings = {
-    quantityOfBalls: 100
+    quantityOfBalls: 10
 }
 
 let raf;
@@ -74,8 +74,6 @@ function makeBall() {
             if (ball.edges.left <= 0 ||
                 ball.edges.right >= 400 ) {
                     return true
-                } else {
-                    return false
                 }
         },
 
@@ -84,24 +82,17 @@ function makeBall() {
             if (ball.edges.top <= 0 ||
                 ball.edges.bottom >= 400 ) {
                     return true
-                } else {
-                    return false
                 }
         },
 
         bounceVertical: function() {
             this.velocity.x = -this.velocity.x;
-            this.velocity.y = this.velocity.y;
             this.imperfectBounce = true;
-            console.log('v ' + this.velocity.x + this.velocity.y)
         },
 
-
         bounceHorizontal: function() {
-            this.velocity.x = this.velocity.x;
             this.velocity.y = -this.velocity.y;
             this.imperfectBounce = true;
-            console.log('h ' + this.velocity.x + this.velocity.y )
         },
 
         draw: function() {
