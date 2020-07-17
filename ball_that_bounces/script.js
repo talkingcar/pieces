@@ -12,76 +12,83 @@ function setup() {
     ctx.canvas.height = 400;
 }
 
-const ball = {
-    x: 0,
-    y: 1,
-    edges: {
-        top: 0,
-        bottom: 0,
-        left: 0,
-        right: 0,
-    },
-    size: 10,
-    velocity: {
-        x:1,
-        y:1,
-    },
+let balls = makeBall();
 
-    calculateEdges: function() {
-        this.edges.top = this.y;
-        this.edges.bottom = this.y + this.size;
-        this.edges.left = this.x;
-        this.edges.right = this.x + this.size;
-    },
+function makeBall() {
+    const ball = {
+        x: 0,
+        y: 1,
+        edges: {
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+        },
+        size: 15,
+        color: 'red',
+        velocity: {
+            x:1,
+            y:1,
+        },
 
-    move: function() {
-      this.x += this.velocity.x;
-      this.y += this.velocity.y;
-      this.calculateEdges();
-      
-      if (this.collideVertical()) {
-          this.bounceVertical();
-      } else if 
-          (this.collideHorizontal()){
-          this.bounceHorizontal()
-      }
-    },
+        calculateEdges: function() {
+            this.edges.top = this.y;
+            this.edges.bottom = this.y + this.size;
+            this.edges.left = this.x;
+            this.edges.right = this.x + this.size;
+        },
 
-    collideVertical: function() {
-        if (ball.edges.top <= 0 ||
-            ball.edges.bottom >= 400 ) {
-                return true
-            } else {
-                return false
-            }
-    },
+        move: function() {
+          this.x += this.velocity.x;
+          this.y += this.velocity.y;
+          this.calculateEdges();
+        
+          if (this.collideVertical()) {
+              this.bounceVertical();
+          } else if 
+              (this.collideHorizontal()){
+              this.bounceHorizontal()
+          }
+        },
 
-
-    collideHorizontal: function() {
-        if (ball.edges.left <= 0 ||
-            ball.edges.right >= 400 ) {
-                return true
-            } else {
-                return false
-            }
-    },
-
-    bounceVertical: function() {
-        this.velocity.x = this.velocity.x + imperfection();
-        this.velocity.y = -this.velocity.y + imperfection();
-    },
+        collideVertical: function() {
+            if (ball.edges.top <= 0 ||
+                ball.edges.bottom >= 400 ) {
+                    return true
+                } else {
+                    return false
+                }
+        },
 
 
-    bounceHorizontal: function() {
-        this.velocity.x = -this.velocity.x + imperfection();
-        this.velocity.y = this.velocity.y + imperfection();
-    },
+        collideHorizontal: function() {
+            if (ball.edges.left <= 0 ||
+                ball.edges.right >= 400 ) {
+                    return true
+                } else {
+                    return false
+                }
+        },
 
-    draw: function() {
-        this.move();
-        ctx.fillStyle = 'red';
-        ctx.fillRect(this.x, this.y, this.size, this.size);
+        bounceVertical: function() {
+            this.velocity.x = this.velocity.x + imperfection();
+            this.velocity.y = -this.velocity.y + imperfection();
+        },
+
+
+        bounceHorizontal: function() {
+            this.velocity.x = -this.velocity.x + imperfection();
+            this.velocity.y = this.velocity.y + imperfection();
+        },
+
+        draw: function() {
+            this.move();
+            ctx.fillStyle = this.color;
+            ctx.fillRect(this.x, this.y, this.size, this.size);
+        }
     }
+
+    return ball;
 }
 
 const field = {
@@ -94,7 +101,7 @@ const field = {
 
 function render() {
     field.draw();
-    ball.draw();
+    balls.draw();
 
     raf = requestAnimationFrame(render);
 }
