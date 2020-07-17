@@ -9,6 +9,7 @@ let raf;
 
 function imperfection() {
     return Math.random() * .1;
+    
 }
 
 function setup() {
@@ -41,6 +42,7 @@ function makeBall() {
             x:1,
             y:1,
         },
+        imperfectBounce: false,
 
         calculateEdges: function() {
             this.edges.top = this.y;
@@ -53,18 +55,24 @@ function makeBall() {
           this.x += this.velocity.x;
           this.y += this.velocity.y;
           this.calculateEdges();
-        
+        if (this.imperfectBounce) {
+            this.velocity.x += imperfection();
+            this.velocity.y += imperfection();
+            this.imperfectBounce = false;
+        }
           if (this.collideVertical()) {
               this.bounceVertical();
-          } else if 
+          } 
+        
+          if 
               (this.collideHorizontal()){
               this.bounceHorizontal()
           }
         },
 
         collideVertical: function() {
-            if (ball.edges.top <= 0 ||
-                ball.edges.bottom >= 398 ) {
+            if (ball.edges.left <= 0 ||
+                ball.edges.right >= 400 ) {
                     return true
                 } else {
                     return false
@@ -73,8 +81,8 @@ function makeBall() {
 
 
         collideHorizontal: function() {
-            if (ball.edges.left <= 0 ||
-                ball.edges.right >= 398 ) {
+            if (ball.edges.top <= 0 ||
+                ball.edges.bottom >= 400 ) {
                     return true
                 } else {
                     return false
@@ -82,14 +90,18 @@ function makeBall() {
         },
 
         bounceVertical: function() {
-            this.velocity.x = this.velocity.x + imperfection();
-            this.velocity.y = -this.velocity.y + imperfection();
+            this.velocity.x = -this.velocity.x;
+            this.velocity.y = this.velocity.y;
+            this.imperfectBounce = true;
+            console.log('v ' + this.velocity.x + this.velocity.y)
         },
 
 
         bounceHorizontal: function() {
-            this.velocity.x = -this.velocity.x + imperfection();
-            this.velocity.y = this.velocity.y + imperfection();
+            this.velocity.x = this.velocity.x;
+            this.velocity.y = -this.velocity.y;
+            this.imperfectBounce = true;
+            console.log('h ' + this.velocity.x + this.velocity.y )
         },
 
         draw: function() {
