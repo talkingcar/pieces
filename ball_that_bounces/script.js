@@ -1,6 +1,10 @@
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext('2d');
 
+const settings = {
+    quantityOfBalls: 100
+}
+
 let raf;
 
 function imperfection() {
@@ -12,7 +16,14 @@ function setup() {
     ctx.canvas.height = 400;
 }
 
-let balls = makeBall();
+let balls = [];
+
+function arrayOfBalls() {
+    while (settings.quantityOfBalls > 0) {
+        balls.push(makeBall());
+        settings.quantityOfBalls -= 1;
+    }
+}
 
 function makeBall() {
     const ball = {
@@ -53,7 +64,7 @@ function makeBall() {
 
         collideVertical: function() {
             if (ball.edges.top <= 0 ||
-                ball.edges.bottom >= 400 ) {
+                ball.edges.bottom >= 398 ) {
                     return true
                 } else {
                     return false
@@ -63,7 +74,7 @@ function makeBall() {
 
         collideHorizontal: function() {
             if (ball.edges.left <= 0 ||
-                ball.edges.right >= 400 ) {
+                ball.edges.right >= 398 ) {
                     return true
                 } else {
                     return false
@@ -101,12 +112,15 @@ const field = {
 
 function render() {
     field.draw();
-    balls.draw();
+    balls.forEach(ball => {
+        ball.draw();
+    })
+    
 
     raf = requestAnimationFrame(render);
 }
 
-
+arrayOfBalls();
 
 setup();
 
