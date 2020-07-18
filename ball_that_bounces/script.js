@@ -2,8 +2,15 @@ const canvas = document.getElementById("game");
 const ctx = canvas.getContext('2d');
 
 const settings = {
-    quantityOfBalls: 10
+    quantityOfBalls: 10,
+    field: {
+        width: 400,
+        height: 400
+    },
+
 }
+
+let playing = true;
 
 let raf;
 
@@ -13,8 +20,8 @@ function imperfection() {
 }
 
 function setup() {
-    ctx.canvas.width = 400;
-    ctx.canvas.height = 400;
+    ctx.canvas.width = settings.field.width;
+    ctx.canvas.height = settings.field.height;
 }
 
 let balls = [];
@@ -72,7 +79,7 @@ function makeBall() {
 
         collideVertical: function() {
             if (ball.edges.left <= 0 ||
-                ball.edges.right >= 400 ) {
+                ball.edges.right >= settings.field.width ) {
                     return true
                 }
         },
@@ -80,7 +87,7 @@ function makeBall() {
 
         collideHorizontal: function() {
             if (ball.edges.top <= 0 ||
-                ball.edges.bottom >= 400 ) {
+                ball.edges.bottom >= settings.field.height ) {
                     return true
                 }
         },
@@ -109,7 +116,7 @@ const field = {
     draw: function() {
     ctx.clearRect(0,0, canvas.width, canvas.height);
     ctx.fillStyle = 'yellow';
-    ctx.fillRect(0,0,400,400);
+    ctx.fillRect(0,0,settings.field.width, settings.field.height);
     }
 }
 
@@ -122,6 +129,21 @@ function render() {
 
     raf = requestAnimationFrame(render);
 }
+
+function pause() {
+    cancelAnimationFrame(raf);
+}
+
+
+canvas.addEventListener('click', function(){
+    if (playing){
+        pause();
+        playing = false;
+    } else {
+        render();
+        playing = true;
+    }
+})
 
 arrayOfBalls();
 
