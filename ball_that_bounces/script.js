@@ -13,9 +13,8 @@ let playing = true;
 
 let raf;
 
-function imperfection() {
-  return Math.random() * 0.1;
-}
+
+
 
 function setup() {
   ctx.canvas.width = settings.field.width;
@@ -42,7 +41,7 @@ function makeBall() {
       right: 0,
     },
     size: 15,
-    color: "red",
+    color: colorFunctions.randomHSLA(),
     velocity: {
       x: 1,
       y: 1,
@@ -67,8 +66,8 @@ function makeBall() {
         this.gravity();
       }
       if (this.imperfectBounce) {
-        this.velocity.x += imperfection();
-        this.velocity.y += imperfection();
+        this.velocity.x += this.imperfection();
+        this.velocity.y += this.imperfection();
         this.imperfectBounce = false;
       }
       if (this.collideVertical()) {
@@ -102,6 +101,12 @@ function makeBall() {
       this.imperfectBounce = true;
     },
 
+    //adds a bit of randomness to bounce
+    imperfection: function () {
+      return Math.random() * 0.1;
+    },
+
+    //reduces velocity of ball, need to make it work with imperfection      
     gravity: function () {
       this.velocity.y *= 0.99;
       this.velocity.y += 0.25;
@@ -124,6 +129,24 @@ const field = {
     ctx.fillRect(0, 0, settings.field.width, settings.field.height);
   },
 };
+
+const colorFunctions = {
+  random: function () {
+    return `rgb(
+      ${Math.floor(255 * Math.random())},
+      ${Math.floor(255 * Math.random())},
+      ${Math.floor(255 * Math.random())}
+    )`;
+  },
+  randomHSLA: function () {
+    return `hsla(
+      ${Math.floor(360 * Math.random())},
+      100%,
+      50%,
+      1
+    )`
+  }
+}
 
 function render() {
   field.draw();
