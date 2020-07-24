@@ -69,7 +69,7 @@ function makeBall() {
   const ball = {
     x: 0,
     y: 1,
-    edges: {
+    edge: {
       top: 0,
       bottom: 0,
       left: 0,
@@ -86,10 +86,10 @@ function makeBall() {
       gravity: false,
     },
     calculateEdges: function () {
-      this.edges.top = this.y;
-      this.edges.bottom = this.y + this.size;
-      this.edges.left = this.x;
-      this.edges.right = this.x + this.size;
+      this.edge.top = this.y;
+      this.edge.bottom = this.y + this.size;
+      this.edge.left = this.x;
+      this.edge.right = this.x + this.size;
     },
 
     move: function () {
@@ -105,76 +105,35 @@ function makeBall() {
         this.velocity.y += this.imperfection();
         this.imperfectBounce = false;
       }
-      if (this.collideVertical()) {
-        this.bounceVertical();
+     
+      if (this.collideSideVertical()) {
+        this.bounceOffVertical();
       }
-      if (this.collideHorizontal()) {
-        this.bounceHorizontal();
-      }
-      if (this.collideBlock(blocks[0])) {
-        this.bounceHorizontal();
-      }
-      if (this.collideBlockSides(blocks[0])) {
-        this.bounceVertical();
+      if (this.collideSideHorizontal()) {
+        this.bounceOffHorizontal();
       }
     },
 
-    collideVertical: function () {
-      if (ball.edges.left <= 0 || ball.edges.right >= settings.field.width) {
+    collideSideVertical: function () {
+      if (ball.edge.top <= 0
+        || ball.edge.bottom >= settings.field.height) {
         return true;
       }
     },
 
-    collideHorizontal: function () {
-      if (ball.edges.top <= 0 ||
-          ball.edges.bottom >= settings.field.height) {
+    collideSideHorizontal: function () {
+      if (ball.edge.left <= 0
+        || ball.edge.right >= settings.field.width) {
         return true;
-      }
-    },
+        }
+     },
 
-    collideBlock: function (block) {
-      if (this.edges.bottom > block.edges.top
-        && this.edges.bottom < block.edges.bottom
-        && this.edges.right > block.edges.left
-        && this.edges.left < block.edges.right) {
-        console.log('top')
-        return true;
-      }
-      if (this.edges.top < block.edges.bottom
-        && this.edges.bottom > block.edges.bottom
-        && this.edges.right > block.edges.left
-        && this.edges.left < block.edges.right) {
-        console.log('bottom')
-        return true
-      }
-    },
-
-    collideBlockSides: function (block) {
-      //console.log('check sides')
-      if (this.edges.right >= block.edges.left
-        && this.edges.left <= block.edges.left
-        && this.edges.top < block.edges.bottom
-        && this.edges.bottom > block.edges.top
-      ) {
-        console.log('bounce right edge')
-        return true;
-      }
-      if (this.edges.left >= block.edges.right
-        && this.edges.right >= block.edges.right
-        && this.edges.top < block.edges.bottom
-        && this.edges.bottom > block.edges.top
-      ) {
-        console.log('bounce left edge')
-        return true
-      }
-    },
-
-    bounceVertical: function () {
+    bounceOffVertical: function () {
       this.velocity.x = -this.velocity.x;
       this.imperfectBounce = true;
     },
 
-    bounceHorizontal: function () {
+    bounceOffHorizontal: function () {
       this.velocity.y = -this.velocity.y;
       this.imperfectBounce = true;
     },
