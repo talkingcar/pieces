@@ -65,6 +65,7 @@ function makeBlock() {
   return block;
 }
 
+
 function makeBall() {
   const ball = {
     x: 0,
@@ -76,7 +77,9 @@ function makeBall() {
       right: 0,
     },
     size: 15,
-    color: colorFunctions.randomHSLA(),
+    width: 15,
+    height: 15,
+    color: 'red',
     velocity: {
       x: 2,
       y: 2,
@@ -112,22 +115,89 @@ function makeBall() {
       if (this.collideSideHorizontal()) {
         this.bounceOffHorizontal();
       }
+
+      if (this.collideBlock(blocks[0])) {
+        console.log(this.findCollisionDirection(blocks[0]))
+        if (this.findCollisionDirection(blocks[0]) === 'left' || this.findCollisionDirection(blocks[0]) === 'right') {
+          console.log('bounce v')
+          this.bounceOffVertical()
+        } else if (this.findCollisionDirection(blocks[0]) === 'top' || this.findCollisionDirection(blocks[0]) ===  'bottom')
+        {
+          console.log('bounce h')
+          this.bounceOffHorizontal()
+          }
+      } 
+/*
+      if (this.collideBlockVertical(blocks[0])) {
+        this.bounceOffVertical();
+      }
+      if (this.collideBlockHorizontal(blocks[0])) {
+        this.bounceOffHorizontal();
+      }*/
     },
 
-    collideSideVertical: function () {
+    collideSideHorizontal: function () {
       if (ball.edge.top <= 0
         || ball.edge.bottom >= settings.field.height) {
         return true;
       }
     },
 
-    collideSideHorizontal: function () {
+    collideSideVertical: function () {
       if (ball.edge.left <= 0
         || ball.edge.right >= settings.field.width) {
         return true;
-        }
-     },
+      }
+    },
 
+    findCollisionDirection: function (block) {
+      if (this.y <= block.y + block.height && this.y + this.height > block.y + block.height && this.x > block.x - this.width && this.x + this.width > block.x + block.width + this.width) {
+        return 'top';
+      } else if (this.y + this.height >= block.y && this.y < block.y && this.x > block.x - this.width && this.x + this.width < block.x + block.width + this.width) {
+        return 'bottom';
+      } else if (this.x <= block.x + block.width && this.x + this.width > block.x + block.width &&  this.y > block.y - this.height && this.y + this.height < block.y + block.height + this.height) {
+        return 'left';
+      } else if (this.x + this.width >= block.x && this.x < block.x && this.y > block.y - this.height && this.y + this.height < block.y + block.height + this.height ) {
+        return 'right';
+      } else {
+        console.log('collision error')
+      }
+    },
+
+
+    collideBlock: function (block) {
+      if (this.y + this.height >= block.y
+        && this.y <= block.y + block.height
+        && this.x <= block.x + block.width
+        && this.x + this.width >= block.x
+      ) {
+        console.log('block');
+        return true;
+      }
+    },
+/*
+    collideBlockHorizontal: function (block) {
+      if (this.y + this.height >= block.y
+        && this.y <= block.y + block.height
+        && this.x <= block.x + block.width
+        && this.x + this.width >= block.x
+      ) {
+        console.log('block');
+        return true;
+      }
+    },
+
+    collideBlockVertical: function (block) {
+      if (this.x <= block.x + block.width
+        && this.x + this.width >= block.x
+        && this.y + this.height >= block.y
+        && this.y <= block.y + block.height) {
+        console.log('block vertical edge')
+        return true
+      }
+    },
+
+  */  
     bounceOffVertical: function () {
       this.velocity.x = -this.velocity.x;
       this.imperfectBounce = true;
