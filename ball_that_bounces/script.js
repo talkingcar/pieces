@@ -2,7 +2,7 @@ const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
 const settings = {
-  quantityOfBalls: 100,
+  quantityOfBalls: 1,
   field: {
     width: 400,
     height: 400,
@@ -123,16 +123,15 @@ function makeBall() {
 
       if (this.collideBlock(blocks[0])) {
         const sideHit = this.hitDirection(blocks[0])
+        console.log(sideHit)
         if (
           sideHit === 'left'
           || sideHit === 'right') {
-          console.log('bounce v')
           this.bounceOffVertical()
         } else if (
           sideHit === 'top'
           || sideHit === 'bottom')
         {
-          console.log('bounce h')
           this.bounceOffHorizontal()
         } else {
           paused = true;
@@ -156,12 +155,19 @@ function makeBall() {
     },
 
     //trying another hit direction
+    /* calculating the edge of the ball that hits a block 
+    by finding the difference between the side of the ball 
+    and the corresponding side of the block 
+    so if the top of the ball hits the bottom of the block,
+    the top of the block will be the side farthest away.
+    */
+    
+    // returns which side of the ball hit
     hitDirection: function (block) {
       const top = this.edge.top - block.edge.top;
       const bottom = block.edge.bottom - this.edge.bottom
-      const left = this.edge.left - block.edge.left;
       const right = block.edge.right - this.edge.right;
-      //console.log(top, bottom, left, right)
+      const left = this.edge.left - block.edge.left;
       if (
         top > bottom
         && top > left
@@ -270,12 +276,6 @@ function render() {
     cancelAnimationFrame(raf);
   };
 }
-
-/*
-function pause() {
-  cancelAnimationFrame(raf);
-}
-*/
 
 canvas.addEventListener("click", function () {
   paused = !paused;
