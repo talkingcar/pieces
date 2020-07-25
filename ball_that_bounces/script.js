@@ -120,25 +120,35 @@ function makeBall() {
       if (this.collideSideHorizontal()) {
         this.bounceOffHorizontal();
       }
+      
+      this.checkCollisions(blocks);
 
-      if (this.collideBlock(blocks[0])) {
-        const sideHit = this.hitDirection(blocks[0])
-        console.log(sideHit)
-        if (
-          sideHit === 'left'
-          || sideHit === 'right') {
-          this.bounceOffVertical()
-        } else if (
-          sideHit === 'top'
-          || sideHit === 'bottom')
-        {
-          this.bounceOffHorizontal()
-        } else {
-          paused = true;
-          console.log('bad location' + ball.edge )
-          }
-      } 
     },
+
+
+    checkCollisions: function (blocks) {
+      blocks.forEach((block) => {
+
+        if (this.collideBlock(block)) {
+          const sideHit = this.hitDirection(block)
+          console.log(sideHit)
+          if (
+            sideHit === 'left'
+            || sideHit === 'right') {
+            this.bounceOffVertical()
+          } else if (
+            sideHit === 'top'
+            || sideHit === 'bottom') {
+            this.bounceOffHorizontal()
+          } else {
+            paused = true;
+            console.log('bad location' + ball.edge)
+          }
+        }
+      }
+      )
+      },
+
 
     collideSideHorizontal: function () {
       if (ball.edge.top <= 0
