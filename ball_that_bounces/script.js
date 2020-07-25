@@ -2,7 +2,7 @@ const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
 const settings = {
-  quantityOfBalls: 1,
+  quantityOfBalls: 20,
   field: {
     width: 400,
     height: 400,
@@ -117,11 +117,11 @@ function makeBall() {
       }
 
       if (this.collideBlock(blocks[0])) {
-        console.log(this.findCollisionDirection(blocks[0]))
-        if (this.findCollisionDirection(blocks[0]) === 'left' || this.findCollisionDirection(blocks[0]) === 'right') {
+        console.log(this.hitDirection(blocks[0]))
+        if (this.hitDirection(blocks[0]) === 'left' || this.hitDirection(blocks[0]) === 'right') {
           console.log('bounce v')
           this.bounceOffVertical()
-        } else if (this.findCollisionDirection(blocks[0]) === 'top' || this.findCollisionDirection(blocks[0]) ===  'bottom')
+        } else if (this.hitDirection(blocks[0]) === 'top' || this.hitDirection(blocks[0]) ===  'bottom')
         {
           console.log('bounce h')
           this.bounceOffHorizontal()
@@ -142,7 +142,7 @@ function makeBall() {
         return true;
       }
     },
-
+/*
     findCollisionDirection: function (block) {
       if (this.y <= block.y + block.height && this.y + this.height > block.y + block.height && this.x > block.x - this.width && this.x + this.width > block.x + block.width + this.width) {
         return 'top';
@@ -155,6 +155,48 @@ function makeBall() {
       } else {
         console.log('collision error')
       }
+    },
+*/
+    // rewrote the find collide direction to simplify
+    hitDirection: function (b) {
+      if (
+        //ball top is equal to block top ball hits it's top
+        this.edge.top <= b.edge.bottom
+        
+        //ball bottom has to be below the block
+        && this.edge.bottom > b.edge.bottom
+        
+        // at farthest right, ball's left edge is in line with block right edge
+        && this.edge.left <= b.edge.right 
+        
+        // at farthest left, ball's right edge is in line with block left edge
+        && this.edge.right >= b.edge.left 
+      ) {
+        return 'top'
+      } else if (
+        this.edge.bottom >= b.edge.top
+        && this.edge.top < b.edge.top
+        && this.edge.left <= b.edge.right 
+        && this.edge.right >= b.edge.left 
+      ) {
+        return 'bottom'
+      } else if (
+        this.edge.left <= b.edge.right
+        && this.edge.right > b.edge.right
+        && this.edge.top <= b.edge.bottom 
+        && this.edge.bottom >= b.edge.top 
+      ) {
+        return 'left'
+      } else if (
+        this.edge.right >= b.edge.left
+        && this.edge.left < b.edge.left
+        && this.edge.top <= b.edge.bottom 
+        && this.edge.bottom >= b.edge.top 
+      ){
+        return 'right'
+      } else {
+        console.log('hit direction error')
+        }
     },
 
 
