@@ -102,6 +102,7 @@ function makeBall() {
       left: 0,
       right: 0,
     },
+    path: [],
     size: 15,
     width: 15,
     height: 15,
@@ -132,7 +133,9 @@ function makeBall() {
     },
 
     move: function () {
-  
+
+      this.path.push([this.x, this.y]);
+
       this.x += this.velocity.x;
       this.y += this.velocity.y;
       
@@ -273,10 +276,18 @@ function makeBall() {
       this.velocity.y += 0.25;
     },
 
+    drawPath: function () {
+      this.path.forEach(xy => {
+        ctx.fillStyle = this.color;
+        ctx.fillRect(xy[0], xy[1], this.size, this.size);
+      }) 
+    },
+
     draw: function () {
       this.move();
       ctx.fillStyle = this.color;
       ctx.fillRect(this.x, this.y, this.size, this.size);
+      this.drawPath();
     },
   };
 
