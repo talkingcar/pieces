@@ -2,7 +2,7 @@ const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
 const settings = {
-  quantityOfBalls: 20,
+  quantityOfBalls: 100,
   field: {
     width: 400,
     height: 400,
@@ -13,6 +13,7 @@ let playing = true;
 
 let raf;
 
+let paused = false;
 
 
 
@@ -99,7 +100,8 @@ function makeBall() {
   
       this.x += this.velocity.x;
       this.y += this.velocity.y;
-      this.calculateEdges();
+      
+      //alterations to velocity happen before calculating edges
       if (this.physics.gravity) {
         this.gravity();
       }
@@ -108,7 +110,10 @@ function makeBall() {
         this.velocity.y += this.imperfection();
         this.imperfectBounce = false;
       }
-     
+
+      //find edges of ball then check for collision
+      this.calculateEdges();
+      
       if (this.collideSideVertical()) {
         this.bounceOffVertical();
       }
@@ -117,14 +122,21 @@ function makeBall() {
       }
 
       if (this.collideBlock(blocks[0])) {
-        console.log(this.hitDirection(blocks[0]))
-        if (this.hitDirection(blocks[0]) === 'left' || this.hitDirection(blocks[0]) === 'right') {
+        const sideHit = this.hitDirection(blocks[0])
+        if (
+          sideHit === 'left'
+          || sideHit === 'right') {
           console.log('bounce v')
           this.bounceOffVertical()
-        } else if (this.hitDirection(blocks[0]) === 'top' || this.hitDirection(blocks[0]) ===  'bottom')
+        } else if (
+          sideHit === 'top'
+          || sideHit === 'bottom')
         {
           console.log('bounce h')
           this.bounceOffHorizontal()
+        } else {
+          paused = true;
+          console.log('bad location' + ball.edge )
           }
       } 
     },
@@ -142,71 +154,48 @@ function makeBall() {
         return true;
       }
     },
-/*
-    findCollisionDirection: function (block) {
-      if (this.y <= block.y + block.height && this.y + this.height > block.y + block.height && this.x > block.x - this.width && this.x + this.width > block.x + block.width + this.width) {
+
+    //trying another hit direction
+    hitDirection: function (block) {
+      const top = this.edge.top - block.edge.top;
+      const bottom = block.edge.bottom - this.edge.bottom
+      const left = this.edge.left - block.edge.left;
+      const right = block.edge.right - this.edge.right;
+      //console.log(top, bottom, left, right)
+      if (
+        top > bottom
+        && top > left
+        && top > right
+      ) {
         return 'top';
-      } else if (this.y + this.height >= block.y && this.y < block.y && this.x > block.x - this.width && this.x + this.width < block.x + block.width + this.width) {
+      } else if
+        (
+        bottom > top
+        && bottom > left
+        && bottom > right
+      ) {
         return 'bottom';
-      } else if (this.x <= block.x + block.width && this.x + this.width > block.x + block.width &&  this.y > block.y - this.height && this.y + this.height < block.y + block.height + this.height) {
+      } else if (
+        left > top
+        && left > bottom
+        && left > right
+      ) {
         return 'left';
-      } else if (this.x + this.width >= block.x && this.x < block.x && this.y > block.y - this.height && this.y + this.height < block.y + block.height + this.height ) {
-        return 'right';
-      } else {
-        console.log('collision error')
+      } else if (
+        right > top
+        && right > bottom
+        && right > left
+      ) {
+        return 'right'
       }
     },
-*/
-    // rewrote the find collide direction to simplify
-    hitDirection: function (b) {
-      if (
-        //ball top is equal to block top ball hits it's top
-        this.edge.top <= b.edge.bottom
-        
-        //ball bottom has to be below the block
-        && this.edge.bottom > b.edge.bottom
-        
-        // at farthest right, ball's left edge is in line with block right edge
-        && this.edge.left <= b.edge.right 
-        
-        // at farthest left, ball's right edge is in line with block left edge
-        && this.edge.right >= b.edge.left 
-      ) {
-        return 'top'
-      } else if (
-        this.edge.bottom >= b.edge.top
-        && this.edge.top < b.edge.top
-        && this.edge.left <= b.edge.right 
-        && this.edge.right >= b.edge.left 
-      ) {
-        return 'bottom'
-      } else if (
-        this.edge.left <= b.edge.right
-        && this.edge.right > b.edge.right
-        && this.edge.top <= b.edge.bottom 
-        && this.edge.bottom >= b.edge.top 
-      ) {
-        return 'left'
-      } else if (
-        this.edge.right >= b.edge.left
-        && this.edge.left < b.edge.left
-        && this.edge.top <= b.edge.bottom 
-        && this.edge.bottom >= b.edge.top 
-      ){
-        return 'right'
-      } else {
-        console.log('hit direction error')
-        }
-    },
-
 
     collideBlock: function (block) {
-      if (this.y + this.height >= block.y
-        && this.y <= block.y + block.height
-        && this.x <= block.x + block.width
-        && this.x + this.width >= block.x
+      if (this.edge.bottom >= block.edge.top
+        && this.edge.top <= block.edge.bottom
+        && this.edge.left <= block.edge.right
+        && this.edge.right >= block.edge.left
       ) {
-        console.log('block');
         return true;
       }
     },
@@ -275,21 +264,22 @@ function render() {
   blocks.forEach((block) => {
     block.draw();
   });
-  raf = requestAnimationFrame(render);
+  if (paused === false) {
+    raf = requestAnimationFrame(render)
+  } else {
+    cancelAnimationFrame(raf);
+  };
 }
 
+/*
 function pause() {
   cancelAnimationFrame(raf);
 }
+*/
 
 canvas.addEventListener("click", function () {
-  if (playing) {
-    pause();
-    playing = false;
-  } else {
-    render();
-    playing = true;
-  }
+  paused = !paused;
+  render();
 });
 
 arrayOfBalls();
