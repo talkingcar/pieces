@@ -1,12 +1,14 @@
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
+console.log(window.innerHeight, window.innerHeight)
+
 const settings = {
   quantityOfBalls: 1,
   quantityOfBlocks: 30,
   field: {
-    width: 400,
-    height: 400,
+    width: window.innerWidth,
+    height: window.innerHeight,
   },
 };
 
@@ -33,8 +35,8 @@ function arrayOfBalls() {
 
 function arrayOfBlocks() {
   while (settings.quantityOfBlocks > 0) {
-    const x = Math.random() * 400;
-    const y = Math.random() * 400;
+    const x = Math.random() * settings.field.width;
+    const y = Math.random() * settings.field.height;
 
     blocks.push(makeBlock(x, y));
     settings.quantityOfBlocks -= 1;
@@ -114,8 +116,8 @@ function makeBall() {
     },
     color: 'pink',
     velocity: {
-      x: 2,
-      y: 2,
+      x: 10,
+      y: 10,
     },
     imperfectBounce: false,
     physics: {
@@ -332,6 +334,7 @@ function initialize() {
   setup();
   arrayOfBalls();
   arrayOfBlocks();
+
   balls.forEach((ball) => {
     ball.updateColor();
   });
