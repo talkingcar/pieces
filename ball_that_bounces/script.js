@@ -3,7 +3,7 @@ const ctx = canvas.getContext("2d");
 
 const settings = {
   quantityOfBalls: 1,
-  quantityOfBlocks: 3,
+  quantityOfBlocks: 30,
   field: {
     width: 400,
     height: 400,
@@ -47,7 +47,7 @@ function makeBlock(x ,y) {
     y: y,
     width: 100,
     height: 100,
-
+    solidity: 100,
     edge: {
       top: 0,
       bottom: 0,
@@ -67,6 +67,16 @@ function makeBlock(x ,y) {
       ctx.fillStyle = this.color;
       ctx.fillRect(this.x, this.y, this.width, this.height);
     },
+    hit: function () {
+      this.solidity -= 10;
+      
+      
+      console.log(blocks.indexOf(this))
+      if (this.solidity <= 0) {
+        const position = blocks.indexOf(this);
+        blocks.splice(position,1)
+      }
+    }
   };
   return block;
 }
@@ -135,7 +145,9 @@ function makeBall() {
       blocks.forEach((block) => {
 
         if (this.collideBlock(block)) {
+          block.hit();
           const sideHit = this.hitDirection(block)
+          
           console.log(sideHit)
           if (
             sideHit === 'left'
