@@ -54,8 +54,19 @@ function makeBlock(x ,y) {
       left: 0,
       right: 0,
     },
+    colorHSLA: {
+      h: 360,
+      s: 100,
+      l: 50,
+      a: 1,
+    },
     color: 'blue',
     
+    updateColor: function () {
+      this.color = colorFunctions.makeHSLA(this.colorHSLA);
+    },
+
+
     calculateEdges: function () {
       this.edge.top = this.y;
       this.edge.bottom = this.y + this.height;
@@ -69,8 +80,8 @@ function makeBlock(x ,y) {
     },
     hit: function () {
       this.solidity -= 10;
-      
-      
+      this.colorHSLA.a -= .1;
+      this.updateColor();
       console.log(blocks.indexOf(this))
       if (this.solidity <= 0) {
         const position = blocks.indexOf(this);
@@ -95,7 +106,13 @@ function makeBall() {
     size: 15,
     width: 15,
     height: 15,
-    color: 'red',
+    colorHSLA: {
+      h: 200,
+      s: 100,
+      l: 50,
+      a: 1,
+    },
+    color: 'pink',
     velocity: {
       x: 2,
       y: 2,
@@ -109,6 +126,10 @@ function makeBall() {
       this.edge.bottom = this.y + this.size;
       this.edge.left = this.x;
       this.edge.right = this.x + this.size;
+    },
+
+    updateColor: function () {
+      this.color = colorFunctions.makeHSLA(this.colorHSLA);
     },
 
     move: function () {
@@ -286,6 +307,9 @@ const colorFunctions = {
       50%,
       1
     )`
+  },
+  makeHSLA: function (hsla) {
+    return  `hsla(${hsla.h},${hsla.s}%,${hsla.l}%,${hsla.a})`
   }
 }
 
@@ -304,14 +328,25 @@ function render() {
   };
 }
 
+function initialize() {
+  setup();
+  arrayOfBalls();
+  arrayOfBlocks();
+  balls.forEach((ball) => {
+    ball.updateColor();
+  });
+
+  blocks.forEach((block) => {
+    block.updateColor();
+  });
+
+}
+
 canvas.addEventListener("click", function () {
   paused = !paused;
   render();
 });
 
-arrayOfBalls();
-arrayOfBlocks();
 
-setup();
-
+initialize();
 render();
