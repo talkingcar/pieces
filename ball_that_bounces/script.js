@@ -42,7 +42,7 @@ function makeBlock() {
     width: 100,
     height: 100,
 
-    edges: {
+    edge: {
       top: 0,
       bottom: 0,
       left: 0,
@@ -51,10 +51,10 @@ function makeBlock() {
     color: 'blue',
     
     calculateEdges: function () {
-      this.edges.top = this.y;
-      this.edges.bottom = this.y + this.height;
-      this.edges.left = this.x;
-      this.edges.right = this.x + this.width;
+      this.edge.top = this.y;
+      this.edge.bottom = this.y + this.height;
+      this.edge.left = this.x;
+      this.edge.right = this.x + this.width;
     },
     draw: function () {
       this.calculateEdges();
@@ -127,13 +127,6 @@ function makeBall() {
           this.bounceOffHorizontal()
           }
       } 
-/*
-      if (this.collideBlockVertical(blocks[0])) {
-        this.bounceOffVertical();
-      }
-      if (this.collideBlockHorizontal(blocks[0])) {
-        this.bounceOffHorizontal();
-      }*/
     },
 
     collideSideHorizontal: function () {
@@ -175,29 +168,6 @@ function makeBall() {
         return true;
       }
     },
-/*
-    collideBlockHorizontal: function (block) {
-      if (this.y + this.height >= block.y
-        && this.y <= block.y + block.height
-        && this.x <= block.x + block.width
-        && this.x + this.width >= block.x
-      ) {
-        console.log('block');
-        return true;
-      }
-    },
-
-    collideBlockVertical: function (block) {
-      if (this.x <= block.x + block.width
-        && this.x + this.width >= block.x
-        && this.y + this.height >= block.y
-        && this.y <= block.y + block.height) {
-        console.log('block vertical edge')
-        return true
-      }
-    },
-
-  */  
     bounceOffVertical: function () {
       this.velocity.x = -this.velocity.x;
       this.imperfectBounce = true;
