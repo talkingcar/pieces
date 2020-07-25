@@ -1,8 +1,6 @@
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
-console.log(window.innerHeight, window.innerHeight)
-
 const settings = {
   quantityOfBalls: 1,
   quantityOfBlocks: 30,
@@ -84,7 +82,6 @@ function makeBlock(x ,y) {
       this.solidity -= 10;
       this.colorHSLA.a -= .1;
       this.updateColor();
-      console.log(blocks.indexOf(this))
       if (this.solidity <= 0) {
         const position = blocks.indexOf(this);
         blocks.splice(position,1)
@@ -171,7 +168,7 @@ function makeBall() {
           block.hit();
           const sideHit = this.hitDirection(block)
           
-          console.log(sideHit)
+
           if (
             sideHit === 'left'
             || sideHit === 'right') {
