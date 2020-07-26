@@ -81,7 +81,9 @@ function makeBlock(x ,y) {
     },
     hit: function () {
       this.solidity -= 10;
-      this.colorHSLA.a -= .1;
+      //this.colorHSLA.a -= .1;
+      this.colorHSLA = colorFunctions.randomHSLA(this.colorHSLA)
+      
       this.updateColor();
       if (this.solidity <= 0) {
         const position = blocks.indexOf(this);
@@ -115,8 +117,8 @@ function makeBall() {
     },
     color: 'pink',
     velocity: {
-      x: 1,
-      y: 1,
+      x: 3,
+      y: 3,
     },
     imperfectBounce: false,
     physics: {
@@ -166,7 +168,7 @@ function makeBall() {
 
 
     /*checks for collisions with blocks
-    if collision then checks for direction (which side of the ball hit)
+    if collision, checks for direction (which side of the ball hit)
     */
     checkCollisions: function (blocks) {
       blocks.forEach((block) => {
@@ -215,6 +217,14 @@ function makeBall() {
     the top of the block will be the side farthest away.
     */
     
+    /* there must be a better way to sort the values,
+    feel like I'm missing something obvious
+    i suppose I could set as an objects,
+    sort the values then return the obj key.
+    like: {top:100, bottom:25, left:10, right: 30}...
+    I don't know, not my favorite, I'll mull it over
+    */ 
+
     // returns which side of the ball hit
     hitDirection: function (block) {
       const top = this.edge.top - block.edge.top;
@@ -305,24 +315,17 @@ const field = {
 };
 
 const colorFunctions = {
-  random: function () {
-    return `rgb(
-      ${Math.floor(255 * Math.random())},
-      ${Math.floor(255 * Math.random())},
-      ${Math.floor(255 * Math.random())}
-    )`;
-  },
-  randomHSLA: function () {
-    return `hsla(
-      ${Math.floor(360 * Math.random())},
-      100%,
-      50%,
-      1
-    )`
-  },
+  /* makeHSLA takes a obj with properties obj.h, obj.s,
+  obj.l, obj.a and makes a HSLA string that can be used 
+  by canvas to render a color*/
   makeHSLA: function (hsla) {
     return  `hsla(${hsla.h},${hsla.s}%,${hsla.l}%,${hsla.a})`
-  }
+  },
+  
+  randomHSLA: function (hsla) {
+    hsla.h = Math.floor(360 * Math.random());
+    return hsla
+  },
 }
 
 function render() {
