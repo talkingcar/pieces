@@ -12,9 +12,10 @@ const settings = {
 
 let playing = true;
 
+let paused = false;
+
 let raf;
 
-let paused = false;
 
 function setup() {
   ctx.canvas.width = settings.field.width;
@@ -114,8 +115,8 @@ function makeBall() {
     },
     color: 'pink',
     velocity: {
-      x: 10,
-      y: 10,
+      x: 1,
+      y: 1,
     },
     imperfectBounce: false,
     physics: {
@@ -133,7 +134,7 @@ function makeBall() {
     },
 
     move: function () {
-
+      //saves this move to path
       this.path.push([this.x, this.y]);
 
       this.x += this.velocity.x;
@@ -164,14 +165,15 @@ function makeBall() {
     },
 
 
+    /*checks for collisions with blocks
+    if collision then checks for direction (which side of the ball hit)
+    */
     checkCollisions: function (blocks) {
       blocks.forEach((block) => {
 
         if (this.collideBlock(block)) {
           block.hit();
           const sideHit = this.hitDirection(block)
-          
-
           if (
             sideHit === 'left'
             || sideHit === 'right') {
@@ -189,7 +191,7 @@ function makeBall() {
       )
       },
 
-
+    //checks for collisions with walls top and bottom
     collideSideHorizontal: function () {
       if (ball.edge.top <= 0
         || ball.edge.bottom >= settings.field.height) {
@@ -197,6 +199,7 @@ function makeBall() {
       }
     },
 
+    //check for collisions with walls left and right
     collideSideVertical: function () {
       if (ball.edge.left <= 0
         || ball.edge.right >= settings.field.width) {
@@ -287,10 +290,9 @@ function makeBall() {
       this.move();
       ctx.fillStyle = this.color;
       ctx.fillRect(this.x, this.y, this.size, this.size);
-      this.drawPath();
+      //this.drawPath();
     },
   };
-
   return ball;
 }
 
@@ -360,4 +362,4 @@ canvas.addEventListener("click", function () {
 
 
 initialize();
-render();
+raf = requestAnimationFrame(render);
