@@ -41,7 +41,18 @@ function arrayOfBlocks() {
     blocks.push(makeBlock(x, y));
     settings.quantityOfBlocks -= 1;
   }
-}
+};
+
+/*make a block that is controlled by user
+using touch controls, wasd, arrow keys.
+can be driven around through field of blocks. 
+maybe can shoot balls??? has a different reaction to ball hitting it.
+*/
+function userBlock() {
+  
+};
+
+
 
 function makeBlock(x, y) {
   const block = {
@@ -99,6 +110,8 @@ function makeBlock(x, y) {
   return block;
 }
 
+
+//ball to bounce around field 
 function makeBall() {
   const ball = {
     x: 0,
@@ -148,7 +161,7 @@ function makeBall() {
       if (settings.physics.gravity) {
         this.gravity();
       }
-      
+
       if (this.imperfectBounce) {
         this.velocity.x += this.imperfection();
         this.velocity.y += this.imperfection();
