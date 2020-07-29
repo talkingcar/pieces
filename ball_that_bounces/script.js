@@ -8,22 +8,23 @@ const settings = {
     width: window.innerWidth,
     height: window.innerHeight,
   },
+  physics: {
+    gravity: false,
+  },
 };
-
-let playing = true;
 
 let paused = false;
 
 let raf;
+
+let balls = [];
+let blocks = [];
 
 
 function setup() {
   ctx.canvas.width = settings.field.width;
   ctx.canvas.height = settings.field.height;
 }
-
-let balls = [];
-let blocks = [];
 
 function arrayOfBalls() {
   while (settings.quantityOfBalls > 0) {
@@ -42,13 +43,14 @@ function arrayOfBlocks() {
   }
 }
 
-function makeBlock(x ,y) {
+function makeBlock(x, y) {
   const block = {
     x: x,
     y: y,
     width: 100,
     height: 100,
     solidity: 100,
+    hit: false,
     edge: {
       top: 0,
       bottom: 0,
@@ -61,12 +63,11 @@ function makeBlock(x ,y) {
       l: 50,
       a: 1,
     },
-    color: 'blue',
-    
+    color: "blue",
+
     updateColor: function () {
       this.color = colorFunctions.makeHSLA(this.colorHSLA);
     },
-
 
     calculateEdges: function () {
       this.edge.top = this.y;
@@ -76,24 +77,27 @@ function makeBlock(x ,y) {
     },
     draw: function () {
       this.calculateEdges();
+      if (this.hit) {
+        this.hitAction();
+        this.hit = false;
+      }
       ctx.fillStyle = this.color;
       ctx.fillRect(this.x, this.y, this.width, this.height);
     },
-    hit: function () {
+    hitAction: function () {
       this.solidity -= 10;
       //this.colorHSLA.a -= .1;
-      this.colorHSLA = colorFunctions.randomHSLA(this.colorHSLA)
-      
+      this.colorHSLA = colorFunctions.randomHSLA(this.colorHSLA);
+
       this.updateColor();
       if (this.solidity <= 0) {
         const position = blocks.indexOf(this);
-        blocks.splice(position,1)
+        blocks.splice(position, 1);
       }
-    }
+    },
   };
   return block;
 }
-
 
 function makeBall() {
   const ball = {
@@ -115,15 +119,13 @@ function makeBall() {
       l: 50,
       a: 1,
     },
-    color: 'pink',
+    color: "pink", //default, overwritten if color functions working
     velocity: {
       x: 3,
       y: 3,
     },
     imperfectBounce: false,
-    physics: {
-      gravity: false,
-    },
+
     calculateEdges: function () {
       this.edge.top = this.y;
       this.edge.bottom = this.y + this.size;
@@ -141,11 +143,12 @@ function makeBall() {
 
       this.x += this.velocity.x;
       this.y += this.velocity.y;
-      
+
       //alterations to velocity happen before calculating edges
-      if (this.physics.gravity) {
+      if (settings.physics.gravity) {
         this.gravity();
       }
+      
       if (this.imperfectBounce) {
         this.velocity.x += this.imperfection();
         this.velocity.y += this.imperfection();
@@ -154,57 +157,48 @@ function makeBall() {
 
       //find edges of ball then check for collision
       this.calculateEdges();
-      
+
       if (this.collideSideVertical()) {
         this.bounceOffVertical();
       }
       if (this.collideSideHorizontal()) {
         this.bounceOffHorizontal();
       }
-      
+
       this.checkCollisions(blocks);
-
     },
-
 
     /*checks for collisions with blocks
     if collision, checks for direction (which side of the ball hit)
     */
     checkCollisions: function (blocks) {
       blocks.forEach((block) => {
-
         if (this.collideBlock(block)) {
-          block.hit();
-          const sideHit = this.hitDirection(block)
-          if (
-            sideHit === 'left'
-            || sideHit === 'right') {
-            this.bounceOffVertical()
-          } else if (
-            sideHit === 'top'
-            || sideHit === 'bottom') {
-            this.bounceOffHorizontal()
+          block.hit = true;
+          const sideHit = this.hitDirection(block);
+          if (sideHit === "left" || sideHit === "right") {
+            this.bounceOffVertical();
+          } else if (sideHit === "top" || sideHit === "bottom") {
+            this.bounceOffHorizontal();
           } else {
+            //stops if glitch, for troubleshooting
             paused = true;
-            console.log('bad location' + ball.edge)
+            console.log("bad location" + ball.edge);
           }
         }
-      }
-      )
-      },
+      });
+    },
 
     //checks for collisions with walls top and bottom
     collideSideHorizontal: function () {
-      if (ball.edge.top <= 0
-        || ball.edge.bottom >= settings.field.height) {
+      if (ball.edge.top <= 0 || ball.edge.bottom >= settings.field.height) {
         return true;
       }
     },
 
     //check for collisions with walls left and right
     collideSideVertical: function () {
-      if (ball.edge.left <= 0
-        || ball.edge.right >= settings.field.width) {
+      if (ball.edge.left <= 0 || ball.edge.right >= settings.field.width) {
         return true;
       }
     },
@@ -216,58 +210,43 @@ function makeBall() {
     so if the top of the ball hits the bottom of the block,
     the top of the block will be the side farthest away.
     */
-    
+
     /* there must be a better way to sort the values,
     feel like I'm missing something obvious
     i suppose I could set as an objects,
     sort the values then return the obj key.
     like: {top:100, bottom:25, left:10, right: 30}...
     I don't know, not my favorite, I'll mull it over
-    */ 
+    */
 
     // returns which side of the ball hit
     hitDirection: function (block) {
       const top = this.edge.top - block.edge.top;
-      const bottom = block.edge.bottom - this.edge.bottom
+      const bottom = block.edge.bottom - this.edge.bottom;
       const right = block.edge.right - this.edge.right;
       const left = this.edge.left - block.edge.left;
-      if (
-        top > bottom
-        && top > left
-        && top > right
-      ) {
-        return 'top';
-      } else if
-        (
-        bottom > top
-        && bottom > left
-        && bottom > right
-      ) {
-        return 'bottom';
-      } else if (
-        left > top
-        && left > bottom
-        && left > right
-      ) {
-        return 'left';
-      } else if (
-        right > top
-        && right > bottom
-        && right > left
-      ) {
-        return 'right'
+      if (top > bottom && top > left && top > right) {
+        return "top";
+      } else if (bottom > top && bottom > left && bottom > right) {
+        return "bottom";
+      } else if (left > top && left > bottom && left > right) {
+        return "left";
+      } else if (right > top && right > bottom && right > left) {
+        return "right";
       }
     },
 
     collideBlock: function (block) {
-      if (this.edge.bottom >= block.edge.top
-        && this.edge.top <= block.edge.bottom
-        && this.edge.left <= block.edge.right
-        && this.edge.right >= block.edge.left
+      if (
+        this.edge.bottom >= block.edge.top &&
+        this.edge.top <= block.edge.bottom &&
+        this.edge.left <= block.edge.right &&
+        this.edge.right >= block.edge.left
       ) {
         return true;
       }
     },
+
     bounceOffVertical: function () {
       this.velocity.x = -this.velocity.x;
       this.imperfectBounce = true;
@@ -283,17 +262,18 @@ function makeBall() {
       return Math.random() * 0.1;
     },
 
-    //reduces velocity of ball, need to make it work with imperfection      
+    //reduces velocity of ball, need to make it work with imperfection
     gravity: function () {
       this.velocity.y *= 0.99;
       this.velocity.y += 0.25;
     },
 
+    //path the ball has traveled
     drawPath: function () {
-      this.path.forEach(xy => {
+      this.path.forEach((xy) => {
         ctx.fillStyle = this.color;
         ctx.fillRect(xy[0], xy[1], this.size, this.size);
-      }) 
+      });
     },
 
     draw: function () {
@@ -319,28 +299,24 @@ const colorFunctions = {
   obj.l, obj.a and makes a HSLA string that can be used 
   by canvas to render a color*/
   makeHSLA: function (hsla) {
-    return  `hsla(${hsla.h},${hsla.s}%,${hsla.l}%,${hsla.a})`
+    return `hsla(${hsla.h},${hsla.s}%,${hsla.l}%,${hsla.a})`;
   },
-  
+
   randomHSLA: function (hsla) {
     hsla.h = Math.floor(360 * Math.random());
-    return hsla
+    return hsla;
   },
-}
+};
 
 function render() {
   field.draw();
-  balls.forEach((ball) => {
-    ball.draw();
-  });
-  blocks.forEach((block) => {
-    block.draw();
-  });
-  if (paused === false) {
-    raf = requestAnimationFrame(render)
+  balls.forEach((ball) => ball.draw());
+  blocks.forEach((block) => block.draw());
+  if (!paused) {
+    raf = requestAnimationFrame(render);
   } else {
     cancelAnimationFrame(raf);
-  };
+  }
 }
 
 function initialize() {
@@ -348,21 +324,14 @@ function initialize() {
   arrayOfBalls();
   arrayOfBlocks();
 
-  balls.forEach((ball) => {
-    ball.updateColor();
-  });
-
-  blocks.forEach((block) => {
-    block.updateColor();
-  });
-
+  balls.forEach((ball) => ball.updateColor());
+  blocks.forEach((block) => block.updateColor());
 }
 
 canvas.addEventListener("click", function () {
   paused = !paused;
   render();
 });
-
 
 initialize();
 raf = requestAnimationFrame(render);
