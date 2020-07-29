@@ -20,7 +20,7 @@ let raf;
 let balls = [];
 let blocks = [];
 
-
+//this is done in a mixed up way, see at field.draw(), fix
 function setup() {
   ctx.canvas.width = settings.field.width;
   ctx.canvas.height = settings.field.height;
