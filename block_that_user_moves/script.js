@@ -1,7 +1,6 @@
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 
-
 let raf;
 
 function setup() {
@@ -19,12 +18,12 @@ const settings = {
 const blockOne = makeBlock(
   settings.field.width * .5,
   settings.field.height * .75,
-  'black');
+  'lightgrey',
+  true);
 
 const blockTwo = makeBlock(
   1,2
 )
-
 
 const currentInput = {
   up: false,
@@ -37,7 +36,6 @@ document.addEventListener('keydown', keyDownHandler, false)
 document.addEventListener('keyup', keyUpHandler, false)
 
 function keyDownHandler(event) {
-  console.log(event)
   if (
     event.key == "ArrowUp" || 
     event.key == "w") {
@@ -65,7 +63,6 @@ function keyDownHandler(event) {
       event.preventDefault();
       currentInput.right = true;
   }
-console.log(currentInput)
 }
 
 function keyUpHandler(event) {
@@ -92,9 +89,7 @@ function keyUpHandler(event) {
     event.key == "d") {
     currentInput.right = false;
   }
-console.log(currentInput)
 }
-
 
 const field = {
   draw: function () {
@@ -104,8 +99,9 @@ const field = {
   },
 };
 
-function makeBlock(x,y,color = 'pink') {
+function makeBlock(x,y,color = 'pink', isActive = false) {
   const block = {
+    isActive: isActive,
     x: x,
     y: y,
     width: 50,
@@ -113,27 +109,29 @@ function makeBlock(x,y,color = 'pink') {
     color: color,
     speed: 2,
 
-    moveTo: function (x,y) {
-      this.x = x;
-      this.y = y;
-    },
-
     inputMove: function () {
       if (currentInput.up) {
-        this.y -= this.speed;
+        this.y = Math.abs(this.y - this.speed);
       }
       if (currentInput.down) {
         this.y += this.speed;
       }
       if (currentInput.left) {
-        this.x -= this.speed;
+        this.x = (this.x - this.speed);
       }
       if (currentInput.right)
-        this.x += this.speed;
+        this.x = (this.x + this.speed);
+      console.log(this.x,this.y)
     },
 
     draw: function () {
-      this.inputMove();
+      if (this.isActive) {
+        this.inputMove()
+      };
+      ctx.shadowColor = "black";
+      ctx.shadowBlur = 2;
+      ctx.shadowOffsetX = 1;
+      ctx.shadowOffsetY = 4;
       ctx.fillStyle = this.color;
       ctx.fillRect(this.x, this.y, this.width, this.height);
     }
@@ -143,8 +141,8 @@ function makeBlock(x,y,color = 'pink') {
 
 function render() {
   field.draw();
-  blockOne.draw();
   blockTwo.draw();
+  blockOne.draw();
   raf = requestAnimationFrame(render);
 }
 
