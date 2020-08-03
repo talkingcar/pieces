@@ -238,14 +238,14 @@ function makeBall() {
       const bottom = block.edge.bottom - this.edge.bottom;
       const right = block.edge.right - this.edge.right;
       const left = this.edge.left - block.edge.left;
-      const direction = [top,bottom,left,right];
-      if (Math.max(top,bottom,right,left)===top) {
+      const direction = Math.max(top,bottom,right,left);
+      if (direction === top) {
         return "top";
-      } else if (Math.max(top,bottom,right,left)===bottom) {
+      } else if (direction===bottom) {
         return "bottom";
-      } else if (Math.max(top,bottom,right,left)===left) {
+      } else if (direction===left) {
         return "left";
-      } else if (Math.max(top,bottom,right,left)===right) {
+      } else if (direction===right) {
         return "right";
       }
     },
