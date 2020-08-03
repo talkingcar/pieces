@@ -4,6 +4,7 @@ const ctx = canvas.getContext("2d");
 const settings = {
   quantityOfBalls: 1,
   quantityOfBlocks: 30,
+  blockSize: window.innerWidth/12,
   field: {
     width: window.innerWidth,
     height: window.innerHeight,
@@ -35,8 +36,8 @@ function arrayOfBalls() {
 
 function arrayOfBlocks() {
   while (settings.quantityOfBlocks > 0) {
-    const x = Math.random() * settings.field.width;
-    const y = Math.random() * settings.field.height;
+    const x = (Math.random() * settings.field.width)-settings.blockSize/2;
+    const y = (Math.random() * settings.field.height)-settings.blockSize/2;
 
     blocks.push(makeBlock(x, y));
     settings.quantityOfBlocks -= 1;
@@ -58,8 +59,8 @@ function makeBlock(x, y) {
   const block = {
     x: x,
     y: y,
-    width: 100,
-    height: 100,
+    width: settings.blockSize,
+    height: settings.blockSize,
     solidity: 100,
     hit: false,
     edge: {
