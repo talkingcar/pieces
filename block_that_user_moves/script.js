@@ -10,11 +10,13 @@ function setup() {
 
 const settings = {
   field: {
-    width: 500,
-    height: 500,
+    width: window.innerWidth,
+    height: window.innerHeight,
     color: "grey"
-  }
+  },
+  blockSize: window.innerWidth  /10
 }
+
 const blockOne = makeBlock(
   settings.field.width * .5,
   settings.field.height * .75,
@@ -22,8 +24,8 @@ const blockOne = makeBlock(
   true);
 
 const blockTwo = makeBlock(
-  1,2
-)
+  1, 2
+);
 
 const currentInput = {
   up: false,
@@ -104,10 +106,10 @@ function makeBlock(x,y,color = 'pink', isActive = false) {
     isActive: isActive,
     x: x,
     y: y,
-    width: 50,
-    height: 10,
+    width: settings.blockSize,
+    height: settings.blockSize/5,
     color: color,
-    speed: 2,
+    speed: 3,
 
     inputMove: function () {
       if (currentInput.up) {
@@ -119,9 +121,9 @@ function makeBlock(x,y,color = 'pink', isActive = false) {
       if (currentInput.left) {
         this.x = (this.x - this.speed);
       }
-      if (currentInput.right)
+      if (currentInput.right) {
         this.x = (this.x + this.speed);
-      console.log(this.x,this.y)
+      }
     },
 
     draw: function () {
@@ -139,9 +141,48 @@ function makeBlock(x,y,color = 'pink', isActive = false) {
   return block
 }
 
+
+//copied  dpad from older work on glitch 
+
+dpad.addEventListener("touchstart", dpadDownHandler);
+dpad.addEventListener("touchend", dpadUpHandler);
+
+function dpadDownHandler(event) {
+  event.preventDefault();
+  if (event.target.id == "up") {
+   currentInput.up = true;
+  }
+  else if (event.target.id == "down") {
+   currentInput.down = true;
+  }
+  else if (event.target.id == "right") {
+    currentInput.right = true;
+  }
+  else if (event.target.id == "left") {
+    currentInput.left = true;
+  }
+}
+
+function dpadUpHandler(event) {
+ 
+  if (event.target.id == "up") {
+   currentInput.up = false;
+  }
+  else if (event.target.id == "down") {
+   currentInput.down = false;
+  }
+  else if (event.target.id == "right") {
+    currentInput.right = false;
+  }
+  else if (event.target.id == "left") {
+   currentInput.left = false;
+  }
+}
+
+
 function render() {
   field.draw();
-  blockTwo.draw();
+  //blockTwo.draw();
   blockOne.draw();
   raf = requestAnimationFrame(render);
 }

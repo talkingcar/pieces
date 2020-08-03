@@ -3,3 +3,53 @@
   padding: 0;
   margin: 0;
 }
+
+#dpad {
+  
+  
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr 3fr 1fr 3fr 1fr;
+  grid-template-rows: 1fr 3fr 1fr 3fr 1fr 3fr 1fr;
+  
+  grid-gap: 0;
+  position: absolute;
+  left: 5%;
+  bottom: .5rem;
+  z-index: 3;
+}
+
+#up {
+  grid-column:3/6;
+  grid-row:1/4;
+}
+
+#down {
+  grid-column:3/6;
+  grid-row: 5/8;
+  
+}
+
+#left {
+  grid-column: 1/4;
+  grid-row: 3/6;
+}
+
+#right {
+  grid-column: 5/8;
+  grid-row: 3/6;
+}
+
+
+
+.dpad-button {
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 50%;
+  background-color: rgba(255,255,233,.25);
+  font-size: x-large;
+  border: 1px solid whitesmoke;
+}
+
+.dpad-button:active {
+  background-color: rgba(255,255,150,.9);
+}
