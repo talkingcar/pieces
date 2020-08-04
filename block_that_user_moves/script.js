@@ -20,13 +20,20 @@ const settings = {
   }
 }
 
+const field = {
+  draw: function () {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = settings.field.color;
+    ctx.fillRect(0, 0, settings.field.width, settings.field.height);
+  },
+};
+
+
 const blockOne = makeBlock(
   settings.field.width * .5,
   settings.field.height * .75,
   'lightgrey',
   true);
-
-
 
 const blockTwo = makeBlock(
   1, 2
@@ -34,7 +41,11 @@ const blockTwo = makeBlock(
 
 const blocks = [blockOne];
 
-const ballOne = makeBall()
+const ballOne = makeBall();
+
+
+
+//CONTROLS AND INPUT
 
 const currentInput = {
   up: false,
@@ -102,14 +113,45 @@ function keyUpHandler(event) {
   }
 }
 
-const field = {
-  draw: function () {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = settings.field.color;
-    ctx.fillRect(0, 0, settings.field.width, settings.field.height);
-  },
-};
 
+//copied  dpad from older work on glitch 
+dpad.addEventListener("touchstart", dpadDownHandler);
+dpad.addEventListener("touchend", dpadUpHandler);
+
+function dpadDownHandler(event) {
+  event.preventDefault();
+  if (event.target.id == "up") {
+   currentInput.up = true;
+  }
+  else if (event.target.id == "down") {
+   currentInput.down = true;
+  }
+  else if (event.target.id == "right") {
+    currentInput.right = true;
+  }
+  else if (event.target.id == "left") {
+    currentInput.left = true;
+  }
+}
+
+function dpadUpHandler(event) {
+  if (event.target.id == "up") {
+   currentInput.up = false;
+  }
+  else if (event.target.id == "down") {
+   currentInput.down = false;
+  }
+  else if (event.target.id == "right") {
+    currentInput.right = false;
+  }
+  else if (event.target.id == "left") {
+   currentInput.left = false;
+  }
+}
+
+
+
+//BALL AND BLOCKS
 
 //brought ball in from ball that bounces
 function makeBall() {
@@ -220,7 +262,7 @@ function makeBall() {
     /* calculating the edge of the ball that hits a block 
     by finding the difference between the sides the ball 
     and side of the block it would be hitting.
-    
+
     */
 
     // returns which side of the ball hit
@@ -335,7 +377,8 @@ function makeBlock(x,y,color = 'pink', isActive = false) {
         this.inputMove()
       };
       ctx.shadowColor = "black";
-      ctx.shadowBlur = 2;
+      // shadow blur is increasing render time
+      // ctx.shadowBlur = 2;
       ctx.shadowOffsetX = 1;
       ctx.shadowOffsetY = 4;
       ctx.fillStyle = this.color;
@@ -345,41 +388,6 @@ function makeBlock(x,y,color = 'pink', isActive = false) {
   return block
 }
 
-
-//copied  dpad from older work on glitch 
-dpad.addEventListener("touchstart", dpadDownHandler);
-dpad.addEventListener("touchend", dpadUpHandler);
-
-function dpadDownHandler(event) {
-  event.preventDefault();
-  if (event.target.id == "up") {
-   currentInput.up = true;
-  }
-  else if (event.target.id == "down") {
-   currentInput.down = true;
-  }
-  else if (event.target.id == "right") {
-    currentInput.right = true;
-  }
-  else if (event.target.id == "left") {
-    currentInput.left = true;
-  }
-}
-
-function dpadUpHandler(event) {
-  if (event.target.id == "up") {
-   currentInput.up = false;
-  }
-  else if (event.target.id == "down") {
-   currentInput.down = false;
-  }
-  else if (event.target.id == "right") {
-    currentInput.right = false;
-  }
-  else if (event.target.id == "left") {
-   currentInput.left = false;
-  }
-}
 
 
 function render() {
