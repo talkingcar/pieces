@@ -218,22 +218,18 @@ function makeBall() {
 
     //trying another hit direction
     /* calculating the edge of the ball that hits a block 
-    by finding the difference between the side of the ball 
-    and the corresponding side of the block 
-    so if the top of the ball hits the bottom of the block,
-    the top of the block will be the side farthest away.
+    by finding the difference between the sides the ball 
+    and side of the block it would be hitting.
+    
     */
-
-  // THIS ONLY WORKS IF BLOCKS ARE SQUARE
-    //DOESN'T WORK RIGHT IF BOTH BLOCK and ball ARE MOVING!!
 
     // returns which side of the ball hit
     hitDirection: function (block) {
-      const top = this.edge.top - block.edge.top;
-      const bottom = block.edge.bottom - this.edge.bottom;
-      const right = block.edge.right - this.edge.right;
-      const left = this.edge.left - block.edge.left;
-      const direction = Math.max(top,bottom,right,left);
+      const top = Math.abs(this.edge.bottom - block.edge.top);
+      const bottom = Math.abs(block.edge.bottom - this.edge.top);
+      const right = Math.abs(block.edge.right - this.edge.left);
+      const left = Math.abs(this.edge.right - block.edge.left);
+      const direction = Math.min(top,bottom,right,left);
       if (direction === top) {
         return "top";
       } else if (direction===bottom) {
@@ -300,7 +296,7 @@ function makeBlock(x,y,color = 'pink', isActive = false) {
     x: x,
     y: y,
     width: settings.blockSize,
-    height: settings.blockSize,
+    height: settings.blockSize/5,
     color: color,
     speed: 3,
     edge: {
