@@ -132,7 +132,7 @@ function makeBall() {
       l: 50,
       a: 1,
     },
-    color: "pink", //default, overwritten if color functions working
+    color: "white", //default, overwritten if color functions working
     velocity: {
       x: 3,
       y: 3,
@@ -225,7 +225,7 @@ function makeBall() {
     */
 
   // THIS ONLY WORKS IF BLOCKS ARE SQUARE
-    //DOESN'T WORK RIGHT IF BOTH BLOCKS ARE MOVING!!
+    //DOESN'T WORK RIGHT IF BOTH BLOCK and ball ARE MOVING!!
 
     // returns which side of the ball hit
     hitDirection: function (block) {
