@@ -1,0 +1,28 @@
+* {
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+
+
+#button-container {
+  position: absolute;
+  left: 40%;
+  bottom: .5rem;
+  z-index: 3;
+}
+
+#jump-button {
+  border-radius: 20%;
+  border: 1rem;
+  padding: 2rem;
+  color: yellow;
+  background-color: red;
+
+}
+
+#jump-button:active {
+  color: red;
+  background-color: yellow;
+}

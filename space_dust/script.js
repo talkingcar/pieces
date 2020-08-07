@@ -11,7 +11,7 @@ const settings = {
     height: window.innerHeight,
     color: 'grey',
     hsla: {
-      h: 250,
+      h: 100,
       s: 100,
       l: 50,
       a: 1,
