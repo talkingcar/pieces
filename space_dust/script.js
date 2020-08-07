@@ -1,3 +1,5 @@
+import { makeHSLA } from "/modules/HSLAcolor.js";
+
 const canvas = document.getElementById('toy');
 const ctx = canvas.getContext('2d');
 
@@ -27,7 +29,7 @@ const field = {
   draw: function (
     width = settings.field.width,
     height = settings.field.height,
-    color = settings.field.color
+    color = makeHSLA(settings.field.hsla)
   ) {
     ctx.clearRect(0, 0, width, height);
     ctx.fillStyle = color;
