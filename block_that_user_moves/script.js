@@ -332,6 +332,7 @@ function makeBall() {
   };
   return ball;
 }
+
 function makeBlock(x,y,color = 'pink', isActive = false) {
   const block = {
     isActive: isActive,
@@ -376,11 +377,13 @@ function makeBlock(x,y,color = 'pink', isActive = false) {
       if (this.isActive) {
         this.inputMove()
       };
-      ctx.shadowColor = "black";
-      // shadow blur is increasing render time
+      // shadow blur is increasing render time almost doubling
       // ctx.shadowBlur = 2;
-      ctx.shadowOffsetX = 1;
-      ctx.shadowOffsetY = 4;
+      
+      // shadow almost doubles rendering time as well
+      // ctx.shadowColor = "black";
+      // ctx.shadowOffsetX = 1;
+      // ctx.shadowOffsetY = 4;
       ctx.fillStyle = this.color;
       ctx.fillRect(this.x, this.y, this.width, this.height);
     }
