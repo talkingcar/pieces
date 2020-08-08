@@ -51,43 +51,9 @@ function makeShip() {
   return ship
 }
 
-//I KNOW THIS IS A HORRIBLE WAY TO DO THIS.
-// EATING CHIPS AND DRINKING BEER WITH THE DOG,
-// TRYING TO FIGURE SOMETHINGSOUT
-function makeDustRow(width = 100, density = 25) {
-  let rowOfDust = new Array(settings.field.width);
-  rowOfDust.fill();
-  const rowRow = rowOfDust.map(point => {
-    const x = Math.random();
-    if (x < density / 100) {
-      point = 1;
-    } else {
-      point = 0;
-    }
-
-    console.log(point)
-    return(point)
-  })
-  console.log(rowOfDust.length)
-  return rowRow
-}
-
-function drawDust() {
-  const rowToDraw = makeDustRow();
-  console.log(rowToDraw)
-  rowToDraw.forEach(x => {
-    if (x != 0) {
-      ctx.fillStyle = 'black'
-      ctx.fillRect(x.indexOf, 10, 10, 10)
-      console.log('beep')
-    }
-  })
-}
 
 
 const shipOne = makeShip();
-
-
 
 
 function setup() {
@@ -117,7 +83,6 @@ function render() {
     settings.field.height / 12,
     'white'
   )
-
 raf = requestAnimationFrame(render)
 }
 
