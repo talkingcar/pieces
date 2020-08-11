@@ -1,4 +1,5 @@
 import { makeHSLA } from "/modules/HSLAcolor.js";
+import { randomHSLA } from "../modules/HSLAcolor.js";
 
 const canvas = document.getElementById('toy');
 const ctx = canvas.getContext('2d');
@@ -52,8 +53,49 @@ function makeShip() {
 }
 
 
+function makeStripes(quantity) {
+  let stripes = [];
+  const lengthToDivide = settings.field.width;
+  const evenDivision = lengthToDivide / quantity;
+  
+  let currentLength = lengthToDivide;
 
+  while (quantity > 0) {
+    const stripe = {
+      width: evenDivision,
+      height: settings.field.height,
+      x: currentLength,
+      y: 0,
+      color: makeHSLA(randomHSLA(settings.field.hsla)),
+    }
+    stripes.push(stripe)
+    currentLength -= stripe.width;
+    quantity -= 1;
+    console.log(stripe)
+  }
+  return stripes;
+}
+
+
+function drawStripes(stripes) {
+  stripes.forEach(stripe =>
+  {
+    ctx.fillStyle = stripe.color;
+    ctx.fillRect(
+      stripe.x,
+      stripe.y,
+      stripe.width,
+      stripe.height
+    )
+    })
+
+}
+
+
+
+const newStripes = makeStripes(10);
 const shipOne = makeShip();
+console.log(newStripes)
 
 
 function setup() {
@@ -75,8 +117,8 @@ const field = {
 
 
 function render() {
-
   field.draw();
+  drawStripes(newStripes);
   shipOne.draw(
     settings.field.width / 2,
     settings.field.height * .7 ,
